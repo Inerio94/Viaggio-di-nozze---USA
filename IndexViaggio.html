@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>On the Road — Viaggio di nozze USA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#20293a;
+    --ink-soft:#3a4457;
+    --rust:#c1502e;
+    --rust-deep:#9c3d22;
+    --sand:#f1e9d8;
+    --sand-deep:#e4d7b8;
+    --sage:#75815c;
+    --gold:#d8a441;
+    --text:#241f18;
+    --paper:#faf6ec;
+    --line:#d9cdaf;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--text);
+    font-family:'Public Sans',sans-serif;
+    font-size:16px;
+    line-height:1.5;
+    padding-bottom:60px;
+  }
+  h1,h2,h3{font-family:'Fraunces',serif;font-weight:600;margin:0;}
+  a{color:var(--rust-deep);}
+
+  /* HERO */
+  .hero{
+    background:linear-gradient(160deg,var(--ink) 0%, #2c3a52 55%, var(--rust-deep) 130%);
+    color:var(--sand);
+    padding:34px 20px 26px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::after{
+    content:"";
+    position:absolute; right:-40px; top:-60px;
+    width:220px;height:220px;border-radius:50%;
+    background:radial-gradient(circle,rgba(216,164,65,.35),transparent 70%);
+  }
+  .hero-eyebrow{
+    font-size:13px; letter-spacing:.02em; color:var(--gold);
+    margin-bottom:6px; font-weight:600;
+  }
+  .hero h1{font-size:28px;line-height:1.15;max-width:320px;}
+  .hero-sub{margin-top:10px;font-size:14.5px;color:#d9dee8;max-width:340px;}
+  .countdown{
+    margin-top:18px;
+    display:inline-flex; align-items:baseline; gap:8px;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:999px; padding:8px 16px;
+  }
+  .countdown b{font-family:'Fraunces',serif;font-size:22px;color:var(--gold);}
+  .countdown span{font-size:13px;color:#d9dee8;}
+
+  /* DAY NAV */
+  .daynav-wrap{
+    background:var(--ink);
+    padding:12px 0 12px 14px;
+    position:sticky; top:0; z-index:10;
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
+  }
+  .daynav{
+    display:flex; gap:8px; overflow-x:auto; padding-right:14px;
+    scrollbar-width:none;
+  }
+  .daynav::-webkit-scrollbar{display:none;}
+  .day-pill{
+    flex:0 0 auto;
+    background:rgba(255,255,255,.07);
+    color:#cfd6e2;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:10px;
+    padding:8px 12px;
+    font-size:12.5px;
+    font-weight:600;
+    cursor:pointer;
+    text-align:left;
+    white-space:nowrap;
+    transition:background .15s, color .15s;
+  }
+  .day-pill .d{display:block;font-size:10.5px;font-weight:500;opacity:.75;}
+  .day-pill.active{
+    background:var(--rust);
+    color:#fff;
+    border-color:var(--rust);
+  }
+
+  main{max-width:640px;margin:0 auto;padding:18px 16px 0;}
+
+  .card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px;
+    margin-bottom:16px;
+  }
+  .route-title{font-size:21px;color:var(--ink);}
+  .route-date{font-size:13px;color:var(--sage);font-weight:600;margin-top:2px;}
+
+  .hotel-box{
+    margin-top:14px;
+    background:var(--sand);
+    border-radius:10px;
+    padding:12px 14px;
+    display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
+  }
+  .hotel-box .label{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--sage);font-weight:700;}
+  .hotel-box .name{font-family:'Fraunces',serif;font-size:16px;margin-top:2px;}
+  .hotel-tags{font-size:12px;color:#665e4e;margin-top:4px;}
+
+  .weather-box{
+    margin-top:12px;
+    display:flex; align-items:center; gap:14px;
+    border:1px dashed var(--line);
+    border-radius:10px;
+    padding:12px 14px;
+  }
+  .weather-temp{font-family:'Fraunces',serif;font-size:26px;color:var(--rust-deep);white-space:nowrap;}
+  .weather-desc{font-size:13px;color:#5a5142;}
+  .weather-note{font-size:11px;color:#9a927e;margin-top:2px;}
+
+  .section-label{
+    font-size:12px; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--rust-deep); font-weight:700; margin:18px 0 8px;
+  }
+  ul.activities{margin:0;padding-left:18px;}
+  ul.activities li{margin-bottom:9px;font-size:14.5px;}
+  ul.activities li b{color:var(--ink);}
+
+  .quicklinks{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+  .qbtn{
+    flex:1 1 auto;
+    text-align:center;
+    text-decoration:none;
+    font-size:13px; font-weight:600;
+    padding:10px 10px;
+    border-radius:9px;
+    background:var(--ink);
+    color:#fff !important;
+  }
+  .qbtn.alt{background:var(--sage);}
+  .qbtn.gold{background:var(--gold);color:#3a2c0c !important;}
+
+  .extra-note{
+    margin-top:10px; font-size:13px; color:#5a5142; background:#fbf3e3;
+    border-left:3px solid var(--gold); padding:8px 10px; border-radius:4px;
+  }
+
+  .footer-section{margin-top:26px;}
+  .foot-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media(max-width:420px){.foot-grid{grid-template-columns:1fr;}}
+  .foot-card h3{font-size:15px;margin-bottom:8px;}
+  .foot-card ul{margin:0;padding-left:18px;font-size:13.5px;}
+  .foot-card li{margin-bottom:5px;}
+
+  .credit{text-align:center;font-size:11.5px;color:#a49a83;margin-top:26px;}
+
+  .sun-row{display:flex;gap:16px;margin-top:8px;font-size:12.5px;color:#5a5142;}
+  .sun-row span b{color:var(--ink);}
+
+  .poi-tabs{display:flex;gap:6px;margin-top:6px;}
+  .poi-tab{
+    flex:1; text-align:center; font-size:12px; font-weight:700;
+    padding:8px 6px; border-radius:8px; border:1px solid var(--line);
+    background:#fff; cursor:pointer; color:#5a5142;
+  }
+  .poi-tab.active{background:var(--rust);color:#fff;border-color:var(--rust);}
+  .poi-list{margin-top:10px;min-height:20px;}
+  .poi-item{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:9px 4px; border-bottom:1px solid var(--line); font-size:13.5px;
+  }
+  .poi-item:last-child{border-bottom:none;}
+  .poi-item a{font-size:12px;font-weight:700;text-decoration:none;color:var(--rust-deep);white-space:nowrap;margin-left:8px;}
+  .poi-dist{color:#9a927e;font-size:11.5px;}
+  .poi-status{font-size:12.5px;color:#9a927e;padding:6px 4px;}
+
+  .notes-box textarea{
+    width:100%; min-height:80px; border:1px solid var(--line); border-radius:8px;
+    padding:10px; font-family:'Public Sans',sans-serif; font-size:13.5px; resize:vertical;
+    background:#fffefb;
+  }
+  .save-status{font-size:11.5px;color:var(--sage);margin-top:6px;height:14px;}
+
+  .checklist-item{
+    display:flex; align-items:center; gap:10px; padding:7px 0;
+    font-size:13.5px; border-bottom:1px solid var(--line);
+  }
+  .checklist-item:last-child{border-bottom:none;}
+  .checklist-item input{width:17px;height:17px;accent-color:var(--rust);}
+  .checklist-item.done label{text-decoration:line-through;color:#a49a83;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-eyebrow">VIAGGIO DI NOZZE · 14–30 SETTEMBRE</div>
+  <h1>On the Road, USA</h1>
+  <div class="hero-sub">Los Angeles → Route 66 → Grand Canyon → Monument Valley → Page → Bryce Canyon → Las Vegas → Sequoia → Yosemite → San Francisco</div>
+  <div class="countdown"><b id="countdownNum">–</b><span id="countdownLabel">alla partenza</span></div>
+</div>
+
+<div class="daynav-wrap">
+  <div class="daynav" id="daynav"></div>
+</div>
+
+<main>
+  <div id="dayContent"></div>
+
+  <div class="footer-section">
+    <div class="foot-grid">
+      <div class="card foot-card">
+        <h3>🍽️ Da provare on the road</h3>
+        <ul>
+          <li>Lobster Roll</li>
+          <li>Clam Chowder (nel panino scavato)</li>
+          <li>In-N-Out Burger</li>
+        </ul>
+      </div>
+      <div class="card foot-card">
+        <h3>📌 Checklist prenotazioni</h3>
+        <div id="checklistWrap"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="credit">Meteo, alba/tramonto: Open-Meteo · Ristoranti/benzina/supermercati: OpenStreetMap live · Navigazione: Google Maps · Note e checklist salvate solo per te</div>
+</main>
+
+<script>
+const DAYS = [
+  {n:1,date:"2026-09-14",route:"Los Angeles",hotel:"The Godfrey Hotel",tags:"Piscina in terrazzo · NO colazione",lat:34.1016,lon:-118.3269,fallback:"18°/28° · 70% umidità",
+   activities:[
+    "Arrivo in hotel per le 16 circa",
+    "<b>Parcheggio:</b> Sixty Four Thirty Sunset (max 22$/g) o 1430 N Cahuenga Blvd o LAZ Parking - Cinerama Dome (max 20$/g, notturno 40$)",
+    "<b>Lake Hollywood Park:</b> 21' in auto per la scritta Hollywood (si vede comunque dal punto successivo)",
+    "<b>Griffith Observatory:</b> 40' in auto per il tramonto (chiuso ma accessibile da fuori; parcheggio 10$/h oppure N Vermont Canyon Rd / Western Canyon Rd)",
+    "Rientro in hotel per doccia",
+    "<b>Hollywood Boulevard:</b> 10' a piedi dall'hotel",
+    "Ristoranti vicini: Stout Burgers & Beer, Roscoe's House of Chicken & Waffle",
+    "In-N-Out a 9149 South Sepulveda Blvd (aerei che passano sopra)"
+   ],mapsLink:null},
+
+  {n:2,date:"2026-09-15",route:"Los Angeles",hotel:"The Godfrey Hotel",tags:"Piscina in terrazzo · NO colazione",lat:34.1016,lon:-118.3269,fallback:"—",
+   activities:[
+    "<b>Mattina (partenza 9):</b> Beverly Hills → Rodeo Drive (20' in auto, parcheggiare a Erewhon, gratis 2h)",
+    "Giro a piedi: Rodeo Road, Spiga Road",
+    "<b>Beverly Gardens Park:</b> foto nella via con palme e scritta",
+    "Giro in auto: Alpine, Roxbury, Carolwood, Bedford, Hillcrest, Maple, Rexford, Summit, Tower Rd, Benedict Canyon Rd (verso Bel Air)",
+    "<b>5th St. & Windsor Blvd:</b> una delle migliori viste sulla città",
+    "<b>Bel Air:</b> da Sunset Blvd, giro tra le ville su Bel Air Rd e Stradella Road (11' da Beverly Hills)",
+    "Pranzo: Urth Caffe o Joan's on Third",
+    "<b>Pomeriggio — Venice Beach:</b> parcheggio Washington Blvd Beach Parking Lot, Boardwalk, Muscle Beach, Skate Park, Venice Canals (10' a piedi)",
+    "Alle 17 verso <b>Santa Monica:</b> Parking Structure 6 o 5 → Palisade Park per il tramonto → Santa Monica Pier",
+    "Rientro in hotel per le 21:45 circa",
+    "Colazione consigliata: The Waffle, Caffe Hub (bagel salmone 12$), Groundwork Coffee Co."
+   ],mapsLink:null},
+
+  {n:3,date:"2026-09-16",route:"Los Angeles → Kingman",hotel:"Best Western Plus – Wayfarer's Inn",tags:"SÌ colazione · SÌ lavanderia",lat:35.1894,lon:-114.0530,fallback:"34°, scende di sera",
+   activities:[
+    "6h10' circa di strada — partire entro le 8:30",
+    "<b>Elmer's Bottle Tree Ranch:</b> installazione artistica lungo la Route 66",
+    "<b>Calico Ghost Town:</b> cittadina abbandonata stile West (alternativa: farlo dopo Las Vegas, giorno 11)",
+    "<b>Oatman:</b> città fantasma con asini per strada; tra le 13:30 e 15:30 duelli in strada messi in scena",
+    "Cena a Kingman: Oyster's Mexican & Seafood (1' dall'hotel)"
+   ],mapsLink:"https://maps.app.goo.gl/nLpW36aPFgtaCChr9?g_st=ic"},
+
+  {n:4,date:"2026-09-17",route:"Kingman → Grand Canyon",hotel:"Yavapai Lodge",tags:"NO colazione · NO lavanderia",lat:36.0544,lon:-112.1401,fallback:"16°/25°",
+   activities:[
+    "Percorso sulla Route 66",
+    "<b>Hackberry General Store:</b> 35-40' in auto — pompe anni '30, auto d'epoca, mini-museo (sosta 15-20')",
+    "<b>Seligman:</b> 1h da Hackberry — Route 66 Shield at Crookton Road, Delgadillo Snow Cap (auto di Cars), giro in paese (sosta 30')",
+    "Proseguire fino al Grand Canyon Village (totale circa 3h15')",
+    "Arrivo in hotel, lasciare i bagagli",
+    "Valutare Shuttle Bus rosso sulla Hermit Road: Hopi Point → Mohave Point (10') → The Abyss (15') → Pima Point (20')",
+    "Cena: Yavapai Tavern, nel nostro hotel (anche opzioni sane)"
+   ],mapsLink:"https://maps.app.goo.gl/iz4DUrotMrUR8j9k7?g_st=ic"},
+
+  {n:5,date:"2026-09-18",route:"Grand Canyon → Monument Valley",hotel:"Gouldings Lodge",tags:"NO colazione · SÌ lavatrice",lat:37.0032,lon:-110.2015,fallback:"14°/29°",
+   activities:[
+    "Partenza alle 9, <b>Desert View Drive</b> in auto (circa 3/4h) con soste a: Pipe Creek Vista, Yaki Point, Grandview Point, Moran Point, Lipan Point, Navajo Point, Desert View Watchtower — fine circa 12:30/13",
+    "Proseguire verso Monument Valley (2h40'), arrivo circa 17/17:30",
+    "Possibile tappa pranzo a Cameron, attraversando la Painted Desert fino a Tuba City",
+    "<b>Forrest Gump Point</b> e ritorno",
+    "Tramonto (circa 19:20) dall'hotel, oppure 15' in auto al Visitor Center Overlook",
+    "Cena: Goulding's Stagecoach Dining Room (vista panoramica)"
+   ],mapsLink:"https://maps.app.goo.gl/jDeUJrhD3vGbaigL7?g_st=ic"},
+
+  {n:6,date:"2026-09-19",route:"Monument Valley → Page",hotel:"Best Western Plus at Lake Powell",tags:"SÌ colazione · SÌ lavatrice",lat:36.9147,lon:-111.4558,fallback:"14°/29°",
+   activities:[
+    "<b>Escursione a cavallo all'alba:</b> prenotata per le 7 con Crisalide (tour di 1h)",
+    "<b>Forest Gump Point:</b> 10' su US-163 North (se non fatto il giorno prima)",
+    "<b>Mexican Hat Rock:</b> tappa foto",
+    "<b>Goosenecks State Park:</b> 20-30' di pausa, vista spettacolare",
+    "<b>Valley of the Gods:</b> 1h di pausa",
+    "<b>Moki Dugway:</b> tappa foto",
+    "<b>Kayenta:</b> pranzo e rifornimento",
+    "Arrivo in hotel verso le 16, doccia e bagagli",
+    "<b>Horseshoe Bend:</b> 5' in auto + 20' a piedi, tramonto alle 18:30",
+    "Cena: Big John's Texas Barbecue (sulla strada dall'Horseshoe Bend)"
+   ],mapsLink:"https://maps.app.goo.gl/a1yvRmUCetbd2sD36?g_st=ic"},
+
+  {n:7,date:"2026-09-20",route:"Page → Bryce Canyon",hotel:"Bryce View Lodge",tags:"SÌ colazione · SÌ lavatrice · di sera fa freddo (5-8°)",lat:37.6283,lon:-112.1676,fallback:"10°/25°",
+   activities:[
+    "<b>Horseshoe Bend:</b> se non visto la sera prima",
+    "<b>Arco di roccia:</b> 1501 Coppermine Rd, Page (dietro la stazione di servizio)",
+    "<b>Antelope Canyon:</b> ingresso ore 11:00 — arrivare 30' prima, tour circa 1h30'",
+    "<b>Kanab:</b> pranzo, valutare Wild Thyme Cafe",
+    "Red Canyon, Red Canyon Arch, Sunrise Point",
+    "<b>Sunset Point:</b> tramonto alle 18:25",
+    "Cena: The Lodge at Bryce Canyon Restaurant"
+   ],mapsLink:"https://maps.app.goo.gl/54W2aALGc1vGG72h6?g_st=ic"},
+
+  {n:8,date:"2026-09-21",route:"Bryce Canyon",hotel:"Under Canvas Bryce Canyon",tags:"NO colazione · NO lavanderia",lat:37.5991,lon:-112.1866,fallback:"10°/25°",
+   activities:[
+    "<b>Trekking Queen's Garden + Navajo Loop Trail:</b> 2/3h, partire verso le 8. Anello: scendi con Queen's Garden, risali con Navajo Loop (lato Wall Street se aperto — il tratto più spettacolare). Rientro con Rim Trail (10')",
+    "<b>Scenic Drive verso sud</b> (circa 2h): Natural Bridge, Agua Canyon, Rainbow Point",
+    "Cena: Bryce Canyon Pines Restaurant (trota locale)",
+    "Relax sotto le stelle a Under Canvas"
+   ],mapsLink:"https://maps.app.goo.gl/zhbL31haitcrRt93A?g_st=ic"},
+
+  {n:9,date:"2026-09-22",route:"Bryce Canyon → Las Vegas",hotel:"Planet Hollywood Resort",tags:"NO colazione · NO lavanderia",lat:36.1147,lon:-115.1728,fallback:"20°/30°",
+   activities:[
+    "Partenza ore 6 (niente colazione) — Zion è sempre molto affollato",
+    "<b>Zion Canyon Visitor Center:</b> 2h di auto, parcheggiare e prendere lo shuttle (obbligatorio, non si entra in auto)",
+    "Temple of Sinawava (20' shuttle + 20' visita) → Zion Lodge (passeggiata Lower Emerald Pool Trail, 30-40') → Court of the Patriarchs (10')",
+    "Se il parcheggio è pieno: Springdale, Town Shuttle Stop #9 → Springdale Shuttle → ponte → Zion Shuttle",
+    "Pranzo a Springdale (5')",
+    "<b>Valley of Fire State Park:</b> 2h30' — Elephant Rock (5' a piedi), Fire Wave Area (10' a piedi)",
+    "Las Vegas: arrivo previsto 16:30/17:30",
+    "Sera: Strip, Fontane del Bellagio (spettacolo ogni 15-30', dura 5'), Bellagio Conservatory & Botanical Gardens",
+    "Cena: Ocean One Bar & Grille o Earl of Sandwich",
+    "Giro in un casinò: Bellagio, Caesars o Paris"
+   ],mapsLink:"https://maps.app.goo.gl/RmcGrcXSewkx5EmB6?g_st=ic"},
+
+  {n:10,date:"2026-09-23",route:"Las Vegas",hotel:"Planet Hollywood Resort",tags:"NO colazione · NO lavanderia",lat:36.1147,lon:-115.1728,fallback:"20°/30°",
+   activities:[
+    "Colazione: Hash House A Go Go (piatti enormi)",
+    "<b>Battlefield Vegas</b> — poligono, circa 1h (da prenotare)",
+    "Las Vegas North Premium Outlet: Ralph Lauren, Nike, Tommy Hilfiger, Levi's",
+    "Pranzo: In-N-Out Burger o altro nell'outlet",
+    "Piscina in hotel e relax",
+    "Cena: Mon Ami Gabi (vista Bellagio, romantico) o Best Friend (coreano-americano) o Gordon Ramsay Burger",
+    "Giro in centro"
+   ],mapsLink:"https://maps.app.goo.gl/vPVTmLzTkinXE2zV7?g_st=ic"},
+
+  {n:11,date:"2026-09-24",route:"Las Vegas → Bakersfield",hotel:"Holiday Inn Express Bakersfield",tags:"SÌ colazione · NO lavanderia",lat:35.3733,lon:-119.0187,fallback:"15°/31°",
+   activities:[
+    "Partenza 8/8:30",
+    "<b>Seven Magic Mountains:</b> colonne di sassi colorati (25')",
+    "<b>Mojave National Preserve</b> (45'): Kelso Dunes, sosta foto",
+    "<b>Calico Ghost Town</b> (55') — se non fatto il giorno 3",
+    "<b>Barstow Outlet</b> (23') — stessi marchi di Las Vegas",
+    "Arrivo a Bakersfield entro le 17",
+    "Cena: Nuestro Mexico Restaurant o Moo Creamery (burger/insalata)"
+   ],mapsLink:"https://maps.app.goo.gl/tqcm5frAkFFGY46dA?g_st=ic"},
+
+  {n:12,date:"2026-09-25",route:"Bakersfield → Sequoia",hotel:"Autocamp Sequoia (Suite Airstream)",tags:"NO colazione · NO lavanderia",lat:36.4864,lon:-118.8597,fallback:"10°/26°",
+   activities:[
+    "Partenza ore 8/8:30",
+    "<b>Sequoia National Park:</b> ingresso da Ash Mountain Entrance, General Highway",
+    "Tunnel Rock, <b>Hospital Rock</b> (pitture native americane, 15')",
+    "<b>Giant Forest</b> e <b>General Sherman Tree</b> (20' a piedi + 20' visita)",
+    "<b>Congress Trail:</b> passeggiata 2-3km tra le Sequoie",
+    "<b>Moro Rock:</b> vista sulla Sierra Nevada, salita scale 10-15'",
+    "Cena: valutare al camping, dove mettono a disposizione il fuoco"
+   ],mapsLink:"https://maps.app.goo.gl/U11U3aUQqfFTVKaH9?g_st=ic"},
+
+  {n:13,date:"2026-09-26",route:"Sequoia → Yosemite",hotel:"Yosemite Miners Inn Motel",tags:"SÌ colazione",lat:37.4845,lon:-119.9662,fallback:"10°/26°",
+   activities:[
+    "Partenza 7:30/8",
+    "<b>Fresno</b> (1h15'): colazione e rifornimento",
+    "<b>South Entrance Yosemite</b> (1h10')",
+    "<b>Tunnel View</b> (40'): vista iconica su El Capitan, Half Dome, Bridalveil Fall",
+    "Yosemite Valley: Bridalveil Fall, El Capitan Meadow (15'), Yosemite Falls (5')",
+    "Parcheggio Curvy Village → <b>Mirror Lake Trail</b> (1h/1h30', facile e pianeggiante)",
+    "Valley View",
+    "Hotel: 1h15' di auto",
+    "Cena: The Grove House (falafel/insalata/panini) o 1850 Restaurant"
+   ],mapsLink:"https://maps.app.goo.gl/DnCyTtBASBVHH7Ha8?g_st=ic"},
+
+  {n:14,date:"2026-09-27",route:"Yosemite → San Francisco",hotel:"Riu Plaza Fisherman's Wharf",tags:"SÌ colazione",lat:37.8080,lon:-122.4177,fallback:"13°/22°",
+   activities:[
+    "Partenza 7:30-8, colazione in hotel",
+    "<b>Monterey</b> (2h45')",
+    "<b>17 Mile Drive:</b> Lone Cypress, spiagge, scogliere",
+    "<b>Carmel by the Sea:</b> paesino sulla spiaggia, dedicare 45'",
+    "<b>Bixby Bridge:</b> in base ai tempi, deviazione per un pezzo di costa in più",
+    "Arrivo a San Francisco"
+   ],mapsLink:"https://maps.app.goo.gl/5mkZHvgM1u1LRLQk7?g_st=ic"},
+
+  {n:15,date:"2026-09-28",route:"San Francisco",hotel:"Riu Plaza Fisherman's Wharf",tags:"SÌ colazione",lat:37.8080,lon:-122.4177,fallback:"—",
+   activities:[
+    "<b>Riconsegna auto:</b> entro le 10",
+    "<b>North Beach:</b> Transamerica Pyramid, Portsmouth Square",
+    "<b>Chinatown:</b> Golden Gate Fortune Cookies, Tin How Temple, Dragon Gate",
+    "Union Square",
+    "<b>Cable Car:</b> da Powell St & Market St, linea rossa Powell/Hyde, scendere a Lombard St & Hyde St (Russian Hill)",
+    "<b>Lombard Street</b> e proseguire a piedi su Jones Street",
+    "Macondray Lane, Ina Coolbrith Park (vista su Downtown), Washington Square",
+    "<b>Coit Tower:</b> salita da Greenwich Street, discesa da Filbert Steps o Greenwich Steps",
+    "Se avanza tempo: quartiere Mission (murales) e Mission Dolores Park per il tramonto",
+    "Cena: The Grove House o 1850 Restaurant"
+   ],mapsLink:"https://maps.app.goo.gl/Zassg6Sucfj3wSgD6?g_st=ic"},
+
+  {n:16,date:"2026-09-29",route:"San Francisco",hotel:"Riu Plaza Fisherman's Wharf",tags:"SÌ colazione",lat:37.8080,lon:-122.4177,fallback:"—",
+   activities:[
+    "<b>Alcatraz:</b> partenza 9:20 da Pier 33, visita 2/2h30 incluso il traghetto",
+    "<b>Noleggio e-bike</b> alle 14:00 per 4h: Golden Gate Bridge e dintorni",
+    "Quartiere Fisherman's: The Cannery, Beach Street, Ghirardelli Square, Hyde Street Pier (musei navi storiche, 9:30-17), Jefferson Street, Pier 39",
+    "Se avanza tempo: Alamo Square con Uber"
+   ],mapsLink:null},
+
+  {n:17,date:"2026-09-30",route:"San Francisco → volo di rientro",hotel:"—",tags:"Volo alle 15:15",lat:37.8080,lon:-122.4177,fallback:"—",
+   activities:[
+    "Pier 39 e Fisherman's Wharf",
+    "Ore 11:00: partenza per l'aeroporto (1h di auto)",
+    "Ore 15:15: partenza volo ✈️"
+   ],mapsLink:null},
+];
+
+// ---------- Countdown ----------
+function updateCountdown(){
+  const today = new Date();
+  const start = new Date(DAYS[0].date+"T00:00:00");
+  const diffDays = Math.ceil((start-today)/(1000*60*60*24));
+  const numEl = document.getElementById('countdownNum');
+  const labelEl = document.getElementById('countdownLabel');
+  if(diffDays > 0){
+    numEl.textContent = diffDays;
+    labelEl.textContent = diffDays===1 ? "giorno alla partenza" : "giorni alla partenza";
+  } else {
+    const end = new Date(DAYS[DAYS.length-1].date+"T00:00:00");
+    if(today <= end){
+      const dayIdx = DAYS.findIndex(d=>d.date === today.toISOString().slice(0,10));
+      numEl.textContent = dayIdx>=0 ? "Giorno "+(dayIdx+1) : "In viaggio";
+      labelEl.textContent = "siete on the road!";
+    } else {
+      numEl.textContent = "✓";
+      labelEl.textContent = "viaggio concluso";
+    }
+  }
+}
+
+// ---------- Day nav ----------
+const nav = document.getElementById('daynav');
+DAYS.forEach((d,i)=>{
+  const btn = document.createElement('button');
+  btn.className = 'day-pill' + (i===0 ? ' active' : '');
+  const dt = new Date(d.date+"T00:00:00");
+  const dd = dt.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit'});
+  btn.innerHTML = 'G'+d.n+'<span class="d">'+dd+'</span>';
+  btn.onclick = ()=>selectDay(i);
+  btn.id = 'pill-'+i;
+  nav.appendChild(btn);
+});
+
+function mapsSearchLink(kind, lat, lon){
+  const q = encodeURIComponent(kind);
+  return `https://www.google.com/maps/search/${q}/@${lat},${lon},14z`;
+}
+
+function weatherCodeToText(code){
+  const map = {
+    0:"Sereno",1:"Poco nuvoloso",2:"Parz. nuvoloso",3:"Coperto",
+    45:"Nebbia",48:"Nebbia con brina",
+    51:"Pioviggine leggera",53:"Pioviggine",55:"Pioviggine intensa",
+    61:"Pioggia leggera",63:"Pioggia",65:"Pioggia intensa",
+    71:"Neve leggera",73:"Neve",75:"Neve intensa",
+    80:"Rovesci leggeri",81:"Rovesci",82:"Rovesci intensi",
+    95:"Temporale",96:"Temporale con grandine"
+  };
+  return map[code] || "—";
+}
+
+async function fetchWeather(day, boxEl){
+  try{
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${day.lat}&longitude=${day.lon}&daily=temperature_2m_max,temperature_2m_min,weathercode,sunrise,sunset&timezone=auto&start_date=${day.date}&end_date=${day.date}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const sunRow = document.getElementById('sunRow');
+    if(data.daily && data.daily.temperature_2m_max && data.daily.temperature_2m_max.length){
+      const max = Math.round(data.daily.temperature_2m_max[0]);
+      const min = Math.round(data.daily.temperature_2m_min[0]);
+      const code = data.daily.weathercode[0];
+      boxEl.innerHTML = `
+        <div class="weather-temp">${min}° / ${max}°</div>
+        <div>
+          <div class="weather-desc">${weatherCodeToText(code)} — previsione live</div>
+          <div class="weather-note">Dati aggiornati da Open-Meteo</div>
+        </div>`;
+      if(sunRow && data.daily.sunrise && data.daily.sunset){
+        const sr = data.daily.sunrise[0].slice(11,16);
+        const ss = data.daily.sunset[0].slice(11,16);
+        sunRow.innerHTML = `<span>🌅 Alba <b>${sr}</b></span><span>🌇 Tramonto <b>${ss}</b></span>`;
+      }
+    } else {
+      throw new Error('fuori range previsionale');
+    }
+  } catch(e){
+    boxEl.innerHTML = `
+      <div class="weather-temp">${day.fallback}</div>
+      <div>
+        <div class="weather-desc">Stima dalla pianificazione originale</div>
+        <div class="weather-note">Previsione live non ancora disponibile per questa data</div>
+      </div>`;
+    const sunRow = document.getElementById('sunRow');
+    if(sunRow) sunRow.innerHTML = '';
+  }
+}
+
+function selectDay(i){
+  document.querySelectorAll('.day-pill').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pill-'+i).classList.add('active');
+  document.getElementById('pill-'+i).scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+
+  const d = DAYS[i];
+  const dt = new Date(d.date+"T00:00:00");
+  const dateStr = dt.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
+
+  const content = document.getElementById('dayContent');
+  content.innerHTML = `
+    <div class="card">
+      <div class="route-title">Giorno ${d.n} · ${d.route}</div>
+      <div class="route-date">${dateStr.charAt(0).toUpperCase()+dateStr.slice(1)}</div>
+
+      <div class="hotel-box">
+        <div>
+          <div class="label">Dove dormite</div>
+          <div class="name">${d.hotel}</div>
+          <div class="hotel-tags">${d.tags}</div>
+        </div>
+      </div>
+
+      <div class="weather-box" id="weatherBox">
+        <div class="weather-temp">…</div>
+        <div class="weather-desc">Carico previsione…</div>
+      </div>
+      <div class="sun-row" id="sunRow"></div>
+
+      <div class="section-label">Programma della giornata</div>
+      <ul class="activities">${d.activities.map(a=>`<li>${a}</li>`).join('')}</ul>
+
+      <div class="section-label">Nei dintorni — ricerca live</div>
+      <div class="poi-tabs">
+        <div class="poi-tab active" data-cat="restaurant" onclick="switchPoiTab(this,'restaurant')">🍴 Ristoranti</div>
+        <div class="poi-tab" data-cat="fuel" onclick="switchPoiTab(this,'fuel')">⛽ Benzina</div>
+        <div class="poi-tab" data-cat="supermarket" onclick="switchPoiTab(this,'supermarket')">🛒 Supermercati</div>
+      </div>
+      <div class="poi-list" id="poiList"><div class="poi-status">Cerco nei dintorni…</div></div>
+      <div class="quicklinks">
+        ${d.mapsLink ? `<a class="qbtn gold" target="_blank" href="${d.mapsLink}">🗺️ Itinerario del giorno su Maps</a>` : ''}
+      </div>
+
+      <div class="section-label">Note personali</div>
+      <div class="notes-box">
+        <textarea id="notesArea" placeholder="Prenotazioni, idee, promemoria per questa giornata…"></textarea>
+        <div class="save-status" id="saveStatus"></div>
+      </div>
+    </div>
+  `;
+  fetchWeather(d, document.getElementById('weatherBox'));
+  loadPoi(d, 'restaurant');
+  loadNotes(d);
+}
+
+// ---------- Overpass POI search ----------
+const POI_TAGS = {
+  restaurant: '["amenity"="restaurant"]',
+  fuel: '["amenity"="fuel"]',
+  supermarket: '["shop"="supermarket"]'
+};
+const POI_LABELS = { restaurant:'ristorante', fuel:'benzinaio', supermarket:'supermercato' };
+let currentDay = null;
+
+function haversine(lat1,lon1,lat2,lon2){
+  const R = 6371;
+  const dLat = (lat2-lat1)*Math.PI/180, dLon = (lon2-lon1)*Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+  return R * 2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function switchPoiTab(el, cat){
+  document.querySelectorAll('.poi-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  loadPoi(currentDay, cat);
+}
+
+async function loadPoi(day, cat){
+  currentDay = day;
+  const listEl = document.getElementById('poiList');
+  if(!listEl) return;
+  listEl.innerHTML = '<div class="poi-status">Cerco nei dintorni…</div>';
+  const radius = cat === 'fuel' ? 8000 : 4000;
+  const query = `[out:json][timeout:15];node${POI_TAGS[cat]}(around:${radius},${day.lat},${day.lon});out body 20;`;
+  try{
+    const res = await fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(query));
+    if(!res.ok) throw new Error('overpass error');
+    const data = await res.json();
+    let items = (data.elements||[])
+      .filter(e=>e.tags && e.tags.name)
+      .map(e=>({name:e.tags.name, dist:haversine(day.lat,day.lon,e.lat,e.lon), lat:e.lat, lon:e.lon}))
+      .sort((a,b)=>a.dist-b.dist)
+      .slice(0,6);
+    if(items.length === 0){
+      listEl.innerHTML = `<div class="poi-status">Nessun risultato nel raggio di ricerca.</div>
+        <div class="quicklinks"><a class="qbtn" target="_blank" href="${mapsSearchLink(POI_LABELS[cat], day.lat, day.lon)}">Cerca su Google Maps</a></div>`;
+      return;
+    }
+    listEl.innerHTML = items.map(it=>`
+      <div class="poi-item">
+        <span>${it.name} <span class="poi-dist">· ${it.dist.toFixed(1)} km</span></span>
+        <a target="_blank" href="https://www.google.com/maps/dir/?api=1&destination=${it.lat},${it.lon}">Vai →</a>
+      </div>`).join('') +
+      `<div class="quicklinks" style="margin-top:10px;"><a class="qbtn" target="_blank" href="${mapsSearchLink(POI_LABELS[cat], day.lat, day.lon)}">Vedi altri su Google Maps</a></div>`;
+  } catch(e){
+    listEl.innerHTML = `<div class="poi-status">Ricerca live non disponibile ora.</div>
+      <div class="quicklinks"><a class="qbtn" target="_blank" href="${mapsSearchLink(POI_LABELS[cat], day.lat, day.lon)}">Cerca su Google Maps</a></div>`;
+  }
+}
+
+// ---------- Notes (persisted via localStorage, funziona da file locale) ----------
+let notesTimer = null;
+function loadNotes(day){
+  const area = document.getElementById('notesArea');
+  const status = document.getElementById('saveStatus');
+  if(!area) return;
+  try{
+    area.value = localStorage.getItem('note:'+day.date) || '';
+  } catch(e){ /* storage non disponibile */ }
+  area.oninput = ()=>{
+    clearTimeout(notesTimer);
+    status.textContent = 'Scrivendo…';
+    notesTimer = setTimeout(()=>{
+      try{
+        localStorage.setItem('note:'+day.date, area.value);
+        status.textContent = 'Salvato ✓';
+        setTimeout(()=>{ if(status) status.textContent=''; }, 1500);
+      } catch(e){
+        status.textContent = 'Salvataggio non riuscito';
+      }
+    }, 600);
+  };
+}
+
+// ---------- Checklist (persisted via localStorage) ----------
+const CHECKLIST_DEFAULT = [
+  {id:'poligono', label:'Poligono a Las Vegas (Battlefield Vegas)'},
+  {id:'ebike', label:'Noleggio e-bike a San Francisco'},
+  {id:'cavallo', label:'Escursione a cavallo Monument Valley (già prenotata, ore 7)'}
+];
+function initChecklist(){
+  const wrap = document.getElementById('checklistWrap');
+  if(!wrap) return;
+  let state = {};
+  try{
+    state = JSON.parse(localStorage.getItem('checklist-state') || '{}');
+  } catch(e){ /* storage non disponibile */ }
+  wrap.innerHTML = CHECKLIST_DEFAULT.map(item=>`
+    <div class="checklist-item ${state[item.id]?'done':''}" id="chk-${item.id}">
+      <input type="checkbox" ${state[item.id]?'checked':''} onchange="toggleChecklist('${item.id}', this.checked)">
+      <label>${item.label}</label>
+    </div>`).join('');
+}
+function toggleChecklist(id, checked){
+  document.getElementById('chk-'+id).classList.toggle('done', checked);
+  try{
+    let state = JSON.parse(localStorage.getItem('checklist-state') || '{}');
+    state[id] = checked;
+    localStorage.setItem('checklist-state', JSON.stringify(state));
+  } catch(e){ /* salvataggio non riuscito, lo stato resta solo visivo */ }
+}
+
+updateCountdown();
+selectDay(0);
+initChecklist();
+</script>
+</body>
+</html>
